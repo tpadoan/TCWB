@@ -1,0 +1,7 @@
+{
+  "places": [{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}],
+  "transitions": [{"id": 1, "label": "b", "pre": [{"id": 1}], "post": [{"id": 1}]},
+                  {"id": 2, "label": "c", "pre": [{"id": 2}], "post": [{"id": 3}]},
+                  {"id": 3, "label": "a", "pre": [{"id": 1}, {"id": 3}], "post": [{"id": 4}]}],
+  "initmarking": [{"id": 1}, {"id": 2}]
+}
