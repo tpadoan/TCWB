@@ -4,7 +4,7 @@ True Concurrency Workbench is a tool for model-checking true concurrency propert
 
 The implemented algorithm is based on a automata-theoretic technique, which reduces the satisfaction of formulae on models to the non-emptiness of parity tree automata. 
 
-The tool is still a prototype. It is missing many optimizations, functionalities, and quality of life improvements. So please be patient. In the future we hope to upgrade it with many more functions.
+The tool is still a prototype. It is missing many optimizations, functionalities, and quality of life improvements. So please be patient. Hopefully in the future it will be upgraded with many more functions.
 
 ## Getting started
 
@@ -16,7 +16,7 @@ While the executables for some operative systems are already provided, the tool 
 
 If you just want the executable go ahead and use one of those provided, assuming that there is one for your system.
 
-Otherwise, you will to download the source code, which includes four files:
+Otherwise, you will need to download the source code, which includes four files:
 * *model.hs*
 * *logic.hs*
 * *mc.hs*
