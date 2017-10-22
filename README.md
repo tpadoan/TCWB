@@ -14,7 +14,7 @@ Here you can find how to install the tool and what you need for it.
 
 While the executables for some operative systems are already provided, the tool can be compiled using an Haskell compiler.
 
-If you just want the executable go ahead and use one of those provided, assuming that there is one for your system.
+If you just want the executable go ahead and use one of those provided, assuming that there is one for your system (only the executable for Windows is available at the moment, more will be added in the near future).
 
 Otherwise, you will need to download the source code, which includes four files:
 * *model.hs*
