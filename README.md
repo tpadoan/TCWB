@@ -1,6 +1,6 @@
 # TCWB
 
-True Concurrency Workbench is a tool for model-checking true concurrency properties, expressed in a logic corresponding to history-preserving bisimilarity, on finite safe Petri nets.
+True Concurrency Workbench is a tool for model-checking true concurrency properties, expressed in a logic corresponding to history-preserving bisimilarity, on safe Petri nets.
 
 The implemented algorithm is based on a automata-theoretic technique, which reduces the satisfaction of formulae on models to the non-emptiness of parity tree automata. 
 
@@ -70,7 +70,7 @@ In *Depends* just variables names represent causal requirements, while names wit
 
 Some symbols can be omitted in certain circumstances. For instance, after propositions the parenthesis are not need if *Vars* is empty. Another example is that you do not need to put the symbol ‘<’ after empty *Depends*. Also, when specifying the label for an action in modal connectives, a useful wildcard is the symbol ‘_’ which means *any label*.
 
-It is fundamental to respect the grammar, in particular to correctly parenthesize formulae.
+It is fundamental to comply with the grammar, in particular to correctly parenthesize formulae.
 
 Some examples of formulae are:
 ```
@@ -117,6 +117,8 @@ Similarly the set of *transitions* is also an array. Each transition has four fi
 Finally, the initial marking, *initmarking* for short, is another array containing the places which are already available at the start, before any transitions has been fired. 
 
 In all the lists of places, the places are identified using their ID, defined at the beginning.
+
+Several examples of safe Petri nets can be found in the *nets* forlder of this repository.
 
 ## Authors
 
