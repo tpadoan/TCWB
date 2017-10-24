@@ -14,15 +14,17 @@ Here you can find how to install the tool and what you need for it.
 
 While the executables for some operative systems are already provided, the tool can be compiled using an Haskell compiler.
 
-If you just want the executable go ahead and use one of those provided, assuming that there is one for your system (only the executable for Windows is available at the moment, more will be added in the near future).
+If you just want the executable go ahead and use one of those provided, assuming that there is one for your system.
 
-Otherwise, you will need to download the source code, which includes four files:
-* *model.hs*
-* *logic.hs*
-* *mc.hs*
-* *main.hs*
+Otherwise, you need to download the source code, which includes four files:
+* *Model.hs*
+* *Logic.hs*
+* *MC.hs*
+* *Main.hs*
 
-You will also need an Haskell compiler. The standard Haskell compiler is the *Glasgow Haskell Compiler* (GHC).
+Then, you need an Haskell compiler. The standard Haskell compiler is the *Glasgow Haskell Compiler* (GHC).
+
+Note also that to compile the tool you need to have already installed the Haskell package [Aeson](https://hackage.haskell.org/package/aeson) (and all of its dependencies).
 
 **You do not need the file named *test.hs*, which is used for some tests purposes.**
 
@@ -32,19 +34,19 @@ If you downloaded one of the precompiled executables, then you just need to run 
 
 Instead, if you have the source files, you can compile them using the Haskell compiler. E.g., the easiest way to do it, assuming you have installed the GHC, is by using the command
 ```
-ghc [-O] --make “main.hs”
+ghc [-O] --make “Main.hs”
 ```
-from the folder where you put the source files. The *-O* flag is an optimising package of compiler flags, but you do not actually need it. The file “main.hs” contains the *main* of the program. Once completed you will obtain an executable to run from a console.
+from the folder where you put the source files. The *-O* flag is an optimising package of compiler flags, but you do not actually need it. The file “Main.hs” contains the *main* of the program. Once completed you will obtain an executable to run from a console.
 
 It is recommended to place the executable and the files containing your input models (as will be explained later) in the same directory, or close to each other.
 
 ## Source code modules
 
 Currently the source code is split in four modules:
-* **Main** - *main.hs* - contains the *main* of the program;
-* **Model** - *model.hs* - contains the functions required to read, interpret, and manipulate Petri nets (their representation);
-* **Logic** - *logic.hs* - contains the functions to parse logic formulae in input, check their syntax and other correctness requirement (explained below);
-* **MC** - *mc.hs* - contains the model-checking algorithm
+* **Main** - *Main.hs* - contains the *main* of the program;
+* **Model** - *Model.hs* - contains the functions required to read, interpret, and manipulate Petri nets (their representation);
+* **Logic** - *Logic.hs* - contains the functions to parse logic formulae in input, check their syntax and other correctness requirement (explained below);
+* **MC** - *MC.hs* - contains the model-checking algorithm
 
 ## Usage guidelines
 
