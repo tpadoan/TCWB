@@ -12,11 +12,11 @@ Here you can find how to install the tool and what you need for it.
 
 ### Prerequisites
 
-While the executables for some operative systems are already provided, the tool can be compiled using an Haskell compiler.
+While the executables for some operating systems are already provided, the tool can be compiled using an Haskell compiler.
 
 If you just want the executable go ahead and use one of those provided, assuming that there is one for your system.
 
-Otherwise, you need to download the source code, which includes four files:
+Otherwise, you need to download the source code, located in the *src* folder, which includes four files:
 * *Model.hs*
 * *Logic.hs*
 * *MC.hs*
@@ -25,8 +25,6 @@ Otherwise, you need to download the source code, which includes four files:
 Then, you need an Haskell compiler. The standard Haskell compiler is the *Glasgow Haskell Compiler* (GHC).
 
 Note also that to compile the tool you need to have already installed the Haskell package [Aeson](https://hackage.haskell.org/package/aeson) (and all of its dependencies).
-
-**You do not need the file named *test.hs*, which is used for some tests purposes.**
 
 ### Installing
 
@@ -42,7 +40,7 @@ It is recommended to place the executable and the files containing your input mo
 
 ## Source code modules
 
-Currently the source code is split in four modules:
+Currently the source code is split into four modules:
 * **Main** - *Main.hs* - contains the *main* of the program;
 * **Model** - *Model.hs* - contains the functions required to read, interpret, and manipulate Petri nets (their representation);
 * **Logic** - *Logic.hs* - contains the functions to parse logic formulae in input, check their syntax and other correctness requirement (explained below);
