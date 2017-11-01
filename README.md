@@ -4,7 +4,7 @@ True Concurrency Workbench is a tool for model-checking true concurrency propert
 
 The implemented algorithm is based on a automata-theoretic technique, which reduces the satisfaction of formulae on models to the non-emptiness of parity tree automata. 
 
-The tool is still a prototype. It is missing many optimizations, functionalities, and quality of life improvements. So please be patient. Hopefully in the future it will be upgraded with many more functions.
+The tool is still a prototype. Many optimizations, functionalities, and quality of life improvements are missing and some are on the way. So please be patient. Hopefully in the future it will be upgraded with many more functions.
 
 ## Getting started
 
