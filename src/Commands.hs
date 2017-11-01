@@ -52,12 +52,18 @@ mergeCmd [] = []
 mergeCmd (s:l) = s ++ (' ':(mergeCmd l))
 
 cmdList :: IO ()
-cmdList = do
-  putStrLn $ "A command list ...\n"
+cmdList = putStrLn "check\t\tTests if a property is satisfied by a model.\ndefine\t\tDefines a property and assigns it to the specified name.\nexit\t\tTerminates the execution of TCWB.\nhelp\t\tShows information about commands.\nload\t\tLoads the model contained in a file and assigns it to the specified name.\nquit\t\tTerminates the execution of TCWB.\nsize\t\tReturns the size of a model.\n"
 
 help :: [Char] -> IO ()
-help cmdName = do
-  putStrLn $ "Help with command \n" ++ cmdName
+help cmdName
+  | cmdName == "help" = putStrLn "Shows information about commands.\n"
+  | cmdName == "quit" = putStrLn "Terminates the execution of TCWB.\n"
+  | cmdName == "exit" = putStrLn "Terminates the execution of TCWB.\n"
+  | cmdName == "load" = putStrLn "Loads the model contained in a file and assigns it to the specified name.\n\nload <filepath> in <name>\n\nfilepath\tPath of the file containing the model.\n\nname\t\tName to be assigned to the model once loaded.\n"
+  | cmdName == "define" = putStrLn "Defines a property and assigns it to the specified name.\n\ndefine <name> = <formula>\n\nname\t\tName to be assigned to the property.\n\nformula\t\tFormula of the logic expressing the property.\n"
+  | cmdName == "check" = putStrLn "Tests if a property is satisfied by a model, both must be previously defined.\n\ncheck <model> <property>\n\nmodel\t\tName of the model to be tested.\n\nproperty\tName of the property to be tested.\n"
+  | cmdName == "size" = putStrLn "Returns the size of a model: the number of reachable states and the maximum branching.\n\nsize <model>\n\nmodel\t\tName of a previously defined model.\n"
+  | otherwise = putStrLn "Unrecognized command\n"
 
 loadIn :: [Char] -> [Char] -> Map.Map [Char] Obj -> IO (Map.Map [Char] Obj)
 loadIn filePath name env = do
