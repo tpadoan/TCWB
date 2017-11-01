@@ -41,14 +41,14 @@ It is recommended to place the executable and the files containing your input mo
 
 ## Source code modules
 
-Currently the source code is split into four modules:
+Currently the source code is split into five modules:
 * **Main** - *TCWB.hs* - contains the *main* of the program;
 * **Model** - *Model.hs* - contains the functions required to read, interpret, and manipulate Petri nets (their representation);
 * **Logic** - *Logic.hs* - contains the functions to parse logic formulae in input, check their syntax and other correctness requirement (explained below);
 * **MC** - *MC.hs* - contains the model-checking algorithm;
 * **Commands** - *Commands.hs* - contains the functions implementing the commands that can be used to interact with the tool.
 
-## Interface
+## User interface
 
 The tool provides a simple command line interface, where you can input commands to be executed.
 
