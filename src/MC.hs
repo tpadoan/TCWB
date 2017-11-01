@@ -2,14 +2,13 @@ module MC where
 
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
-import qualified Data.Map.Lazy as LazyMap
 import Model
 import Logic
 
 -- Automata state (node)
 data Node = Node (Set.Set Place) (Map.Map Int (Set.Set Place)) LHP
 -- Propositions log entry
-data PropLog = LogEntry (Node, LazyMap.Map Int PropLog, Int) | EmptyLog
+data PropLog = LogEntry (Node, Map.Map Int PropLog, Int) | EmptyLog
 
 eqEnv :: [Int] -> Map.Map Int (Set.Set Place) -> [Int] -> Map.Map Int (Set.Set Place) -> Bool
 eqEnv (v1:t1) eta1 (v2:t2) eta2 = (Map.lookup v1 eta1) == (Map.lookup v2 eta2) && eqEnv t1 eta1 t2 eta2
@@ -100,7 +99,7 @@ hashVars _ [] _ _ = 0
 hashNode :: Set.Set Place -> Map.Map Int (Set.Set Place) -> [VAR] -> Int
 hashNode m eta vs = (rem (foldr (\x -> \y -> pid x + y) 0 m) 10) + hashVars eta vs 10 1
 
-testAncestors :: Node -> LazyMap.Map Int PropLog -> Int -> Bool
+testAncestors :: Node -> Map.Map Int PropLog -> Int -> Bool
 testAncestors this@(Node m eta (PROP (p,vs))) beta h =
   case (Map.lookup p beta) of
     Just (LogEntry (anc, betaA, hA)) ->
@@ -120,7 +119,7 @@ renameVars eta ((VAR v):vs) ((VAR u):us) =
     _ -> eta
 renameVars eta _ _ = eta
 
-unfold :: Node -> LazyMap.Map Int LHP -> LazyMap.Map Int PropLog -> Int -> (Node, LazyMap.Map Int PropLog)
+unfold :: Node -> Map.Map Int LHP -> Map.Map Int PropLog -> Int -> (Node, Map.Map Int PropLog)
 unfold this@(Node m eta (PROP (p,vs))) pi beta h =
   case Map.lookup p pi of
     Just (NU (PROP (_,vsA),f)) -> (Node m (renameVars eta vs vsA) f, (Map.insert p (LogEntry (this,beta,h)) beta))
@@ -128,7 +127,7 @@ unfold this@(Node m eta (PROP (p,vs))) pi beta h =
     _ -> (this, beta)
 unfold nd _ beta _ = (nd,beta)
 
-existsBranch :: Net -> [Node] -> LazyMap.Map Int LHP -> LazyMap.Map Int PropLog -> Map.Map Node Bool -> (Bool, Map.Map Node Bool)
+existsBranch :: Net -> [Node] -> Map.Map Int LHP -> Map.Map Int PropLog -> Map.Map Node Bool -> (Bool, Map.Map Node Bool)
 existsBranch n ((Node m eta f):l) pi beta gamma =
   case Map.lookup (Node m eta f) gamma of
     Just True -> (True, gamma)
@@ -141,7 +140,7 @@ existsBranch n ((Node m eta f):l) pi beta gamma =
           else existsBranch n l pi beta (Map.insert (Node m eta f) False gammaNew)
 existsBranch _ [] _ _ gamma = (False, gamma)
 
-forallBranches :: Net -> [Node] -> LazyMap.Map Int LHP -> LazyMap.Map Int PropLog -> Map.Map Node Bool -> (Bool, Map.Map Node Bool)
+forallBranches :: Net -> [Node] -> Map.Map Int LHP -> Map.Map Int PropLog -> Map.Map Node Bool -> (Bool, Map.Map Node Bool)
 forallBranches n ((Node m eta f):l) pi beta gamma =
   case Map.lookup (Node m eta f) gamma of
     Just True -> forallBranches n l pi beta gamma
@@ -155,7 +154,7 @@ forallBranches n ((Node m eta f):l) pi beta gamma =
 forallBranches _ [] _ _ gamma = (True, gamma)
 
 -- Check automaton non-emptiness
-nonempty :: Net -> Node -> LazyMap.Map Int LHP -> LazyMap.Map Int PropLog -> Map.Map Node Bool -> (Bool, Map.Map Node Bool)
+nonempty :: Net -> Node -> Map.Map Int LHP -> Map.Map Int PropLog -> Map.Map Node Bool -> (Bool, Map.Map Node Bool)
 nonempty n (Node _ _ (BOO T)) _ _ gamma= (True, gamma)
 nonempty n (Node _ _ (BOO F)) _ _ gamma = (False, gamma)
 nonempty n this@(Node m eta (AND (f,g))) pi beta gamma =
