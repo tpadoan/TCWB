@@ -30,7 +30,7 @@ main = do
         Just ("load":filePath:"in":name:[]) -> do
           newEnv <- loadIn filePath name env
           loop newEnv
-        Just (name:"=":value) -> do
+        Just ("define":name:"=":value) -> do
           newEnv <- defineProp name (mergeCmd value) env
           loop newEnv
         Just ("check":netName:propName:[]) -> do
