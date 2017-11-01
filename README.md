@@ -16,11 +16,12 @@ While the executables for some operating systems are already provided, the tool 
 
 If you just want the executable go ahead and use one of those provided, assuming that there is one for your system.
 
-Otherwise, you need to download the source code, located in the *src* folder, which includes four files:
+Otherwise, you need to download the source code, located in the *src* folder, which includes five files:
 * *Model.hs*
 * *Logic.hs*
 * *MC.hs*
-* *Main.hs*
+* *Commands.hs*
+* *TCWB.hs*
 
 Then, you need an Haskell compiler. The standard Haskell compiler is the *Glasgow Haskell Compiler* (GHC).
 
@@ -32,19 +33,28 @@ If you downloaded one of the precompiled executables, then you just need to run 
 
 Instead, if you have the source files, you can compile them using the Haskell compiler. E.g., the easiest way to do it, assuming you have installed the GHC, is by using the command
 ```
-ghc [-O] --make “Main.hs”
+ghc [-O] --make “TCWB.hs”
 ```
-from the folder where you put the source files. The *-O* flag is an optimising package of compiler flags, but you do not actually need it. The file “Main.hs” contains the *main* of the program. Once completed you will obtain an executable to run from a console.
+from the folder where you put the source files. The *-O* flag is an optimising package of compiler flags, but you do not actually need it. The file “TCWB.hs” contains the *main* of the program. Once completed you will obtain an executable to run from a console.
 
 It is recommended to place the executable and the files containing your input models (as will be explained later) in the same directory, or close to each other.
 
 ## Source code modules
 
 Currently the source code is split into four modules:
-* **Main** - *Main.hs* - contains the *main* of the program;
+* **Main** - *TCWB.hs* - contains the *main* of the program;
 * **Model** - *Model.hs* - contains the functions required to read, interpret, and manipulate Petri nets (their representation);
 * **Logic** - *Logic.hs* - contains the functions to parse logic formulae in input, check their syntax and other correctness requirement (explained below);
-* **MC** - *MC.hs* - contains the model-checking algorithm
+* **MC** - *MC.hs* - contains the model-checking algorithm;
+* **Commands** - *Commands.hs* - contains the functions implementing the commands that can be used to interact with the tool.
+
+## Interface
+
+The tool provides a simple command line interface, where you can input commands to be executed.
+
+To see the list of available commands you can use the command *help*. To get more information about a specific command just type *help \<command\>*.
+
+Using commands you can assign properties and models to names, then use those names in model-checking or other functions.
 
 ## Usage guidelines
 
