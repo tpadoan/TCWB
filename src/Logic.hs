@@ -7,8 +7,8 @@ import qualified Data.Map.Strict as Map
 -- Lexical analyser
 
 data B = T | F
-data F = Nu | Mu
-data Token = Sym Char | Boo B | Fix F | Id [Char]
+data FIX = Nu | Mu
+data Token = Sym Char | Boo B | Fix FIX | Id [Char]
 data VAR = VAR Int
 data ACT = ACT [Char]
 data LHP = BOO B | PROP (Int,[VAR]) | AND (LHP,LHP) | OR (LHP,LHP) | DIA ([VAR],[VAR],ACT,VAR,LHP) | BOX ([VAR],[VAR],ACT,VAR,LHP) | NU (LHP,LHP) | MU (LHP,LHP)
@@ -442,11 +442,11 @@ areFixWellFormed (MU (PROP (s,vs),f)) =
   in fv == (freeVars f) && Set.size fv == sz && checkVarsInProps sz (propOccurrsIn (PROP (s,vs)) f) && areFixWellFormed f
 areFixWellFormed _ = True
 
-parseFormula :: [Char] -> Maybe (LHP,[Token])
+parseFormula :: [Char] -> Maybe LHP
 parseFormula s =
   case formula Map.empty 0 Map.empty 0 (lexi (s++"$")) of
     (Just (treeF, resTok), _) ->
       if checkEnd resTok && areFixWellFormed treeF
-        then Just (treeF, resTok)
+        then Just treeF
         else Nothing
     (Nothing, _) -> Nothing
