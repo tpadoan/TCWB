@@ -59,7 +59,7 @@ help cmdName
   | cmdName == "help" = putStrLn "Shows information about commands.\n"
   | cmdName == "quit" = putStrLn "Terminates the execution of TCWB.\n"
   | cmdName == "exit" = putStrLn "Terminates the execution of TCWB.\n"
-  | cmdName == "load" = putStrLn "Loads the model contained in a file and assigns it to the specified name.\n\nload <filepath> in <name>\n\nfilepath\tPath of the file containing the model, if containing spaces it must be put between quotation mark \"<filepath>\".\n\nname\t\tName to be assigned to the model once loaded.\n"
+  | cmdName == "load" = putStrLn "Loads the model contained in a file and assigns it to the specified name.\n\nload <filepath> in <name>\n\nfilepath\tPath of the file containing the model, if containing spaces it must be put between double quotes.\n\nname\t\tName to be assigned to the model once loaded.\n"
   | cmdName == "define" = putStrLn "Defines a property and assigns it to the specified name.\n\ndefine <name> = <formula>\n\nname\t\tName to be assigned to the property.\n\nformula\t\tClosed formula of the logic expressing the property.\n"
   | cmdName == "check" = putStrLn "Tests if a property is satisfied by a model, both must be previously defined.\n\ncheck <model> <property>\n\nmodel\t\tName of the model to be tested.\n\nproperty\tName of the property to be tested.\n"
   | cmdName == "size" = putStrLn "Returns the size of a model: the number of reachable states and the maximum branching.\n\nsize <model>\n\nmodel\t\tName of a previously defined model.\n"
