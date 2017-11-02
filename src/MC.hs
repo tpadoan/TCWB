@@ -92,12 +92,12 @@ checkCondOnTrans eta (ACT a) cs cc t = (a == "_" || label t == a) && isCausedByL
 hashVars :: Map.Map Int (Set.Set Place) -> [VAR] -> Int -> Int -> Int
 hashVars eta ((VAR v):vs) base exp =
   case Map.lookup v eta of
-    Just ps -> (base^exp) * (rem (foldr (\x -> \y -> (pid x) + y) 0 ps) base) + hashVars eta vs base (exp+1)
+    Just ps -> (base^exp) * (rem (Set.foldr (\x -> \y -> (pid x) + y) 0 ps) base) + hashVars eta vs base (exp+1)
     _ -> hashVars eta vs base exp
 hashVars _ [] _ _ = 0
 
 hashNode :: Set.Set Place -> Map.Map Int (Set.Set Place) -> [VAR] -> Int
-hashNode m eta vs = (rem (foldr (\x -> \y -> pid x + y) 0 m) 10) + hashVars eta vs 10 1
+hashNode m eta vs = (rem (Set.foldr (\x -> \y -> pid x + y) 0 m) 10) + hashVars eta vs 10 1
 
 testAncestors :: Node -> Map.Map Int PropLog -> Int -> Bool
 testAncestors this@(Node m eta (PROP (p,vs))) beta h =
