@@ -116,7 +116,7 @@ Here is a simple example:
 }
 ```
 
-The set of *places* is just an array of object identified by an ID which must be a unique number.
+The set of *places* is just an array of items identified by an ID which must be a unique number.
 
 Similarly the set of *transitions* is also an array. Each transition has four fields:
 * a numeric unique ID;
