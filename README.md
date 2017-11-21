@@ -74,7 +74,7 @@ Modf ::= {Depends < act var} Modf | [Depends < act var] Modf | T | F | prop(Vars
 Vars ::= var Vars | epsilon
 Depends ::= var Depends | !var Depends | epsilon
 ```
-where *var* is a variable, e.g.: x, *act* is a label, e.g., a, and *prop* is a proposition. As for usual grammars, *epsilon* means empty/nothing.
+where *var* is a variable, e.g.: x, *act* is a label, e.g.: a, and *prop* is a proposition, e.g.: Z. As for usual grammars, *epsilon* means empty/nothing.
 
 In *Depends* just variables names represent causal requirements, while names with a ‘!’ before, e.g., !x, represent independence requirements. There is no order on the variables in *Depends*, you can write, e.g., x !y z, where only y is an independence requirement.
 
