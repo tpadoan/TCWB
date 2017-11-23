@@ -11,9 +11,10 @@ import MC
 data Obj = MODEL Net | PROPERTY LHP
 
 splitCmd :: [Char] -> Maybe [[Char]]
-splitCmd cmd = case splitSep cmd of
-  Nothing -> Nothing
-  Just l -> Just (filter (not . null) l)
+splitCmd cmd =
+  case splitSep cmd of
+    Nothing -> Nothing
+    Just l -> Just (filter (not . null) l)
 
 splitSep :: [Char] -> Maybe [[Char]]
 splitSep [] = Just [[]]
@@ -81,22 +82,24 @@ loadIn filePath name env = do
         return (Map.insert name (MODEL net) env)
 
 defineProp :: [Char] -> [Char] -> Map.Map [Char] Obj -> IO (Map.Map [Char] Obj)
-defineProp name value env = case parseFormula value of
-  Nothing -> do
-    putStrLn "The input formula is not correct\n"
-    return env
-  Just prop -> do
-    putStrLn (name ++ " = " ++ show prop ++ "\n")
-    return (Map.insert name (PROPERTY prop) env)
+defineProp name value env =
+  case parseFormula value of
+    Nothing -> do
+      putStrLn "The input formula is not correct\n"
+      return env
+    Just prop -> do
+      putStrLn (name ++ " = " ++ show prop ++ "\n")
+      return (Map.insert name (PROPERTY prop) env)
 
 check :: [Char] -> [Char] -> Map.Map [Char] Obj -> IO ()
-check netName propName env = case Map.lookup netName env of
-  Nothing -> putStrLn (netName ++ " is undefined\n")
-  Just (PROPERTY _) -> putStrLn (netName ++ " is not a model\n")
-  Just (MODEL net) -> case Map.lookup propName env of
-    Nothing -> putStrLn (propName ++ " is undefined\n")
-    Just (MODEL _) -> putStrLn (propName ++ " is not a property\n")
-    Just (PROPERTY prop) -> putStrLn (show (satisfies net prop))
+check netName propName env =
+  case Map.lookup netName env of
+    Nothing -> putStrLn (netName ++ " is undefined\n")
+    Just (PROPERTY _) -> putStrLn (netName ++ " is not a model\n")
+    Just (MODEL net) -> case Map.lookup propName env of
+      Nothing -> putStrLn (propName ++ " is undefined\n")
+      Just (MODEL _) -> putStrLn (propName ++ " is not a property\n")
+      Just (PROPERTY prop) -> putStrLn (show (satisfies net prop))
 
 netSize :: [Char] -> Map.Map [Char] Obj -> IO ()
 netSize name env =
@@ -106,3 +109,10 @@ netSize name env =
     Just (MODEL net) -> do
       let (reachables, branch) = states net
       putStrLn (name ++ " has " ++ show (Set.size reachables) ++ " reachable states, max branching " ++ show branch ++ "\n")
+
+evaluate :: [Char] -> Map.Map [Char] Obj -> IO ()
+evaluate name env =
+  case Map.lookup name env of
+    Nothing -> putStrLn (name ++ " is undefined\n")
+    Just (PROPERTY prop) -> putStrLn (name ++ " = " ++ show prop ++ "\n")
+    Just (MODEL net) -> putStrLn (name ++ " = " ++ show net ++ "\n")

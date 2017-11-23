@@ -1,5 +1,6 @@
 module Main where
 
+import System.IO
 import qualified Data.Map.Strict as Map
 import Commands
 import Model
@@ -13,6 +14,8 @@ main = do
   loop Map.empty where
     loop :: Map.Map [Char] Obj -> IO ()
     loop env = do
+      putStr "> "
+      hFlush stdout
       inputCmd <- getLine
       case splitCmd inputCmd of
         Nothing -> do
@@ -38,6 +41,9 @@ main = do
           loop env
         Just ("size":netName:[]) -> do
           netSize netName env
+          loop env
+        Just (name:[]) -> do
+          evaluate name env
           loop env
         _ -> do
           putStrLn "Unrecognized command\n"
