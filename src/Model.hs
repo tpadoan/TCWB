@@ -9,7 +9,7 @@ import qualified Data.Set as Set
 
 data Place = Place {pid::Int} deriving (Show,Generic)
 data TRANS = TRANS {tidT::Int, labelT::[Char], preT::[Place], postT::[Place]} deriving (Show,Generic)
-data NET = NET {placesN::[Place], transN::[TRANS], initmarkN::[Place]} deriving (Show,Generic)
+data NET = NET {nameN::[Char], placesN::[Place], transN::[TRANS], initmarkN::[Place]} deriving (Show,Generic)
 data Trans = Trans {tid::Int, label::[Char], pre::Set.Set Place, post::Set.Set Place} deriving (Show)
 data Net = Net {places::Set.Set Place, trans::[Trans], initmark::Set.Set Place} deriving (Show)
 
@@ -26,10 +26,11 @@ instance FromJSON TRANS where
       return TRANS{tidT=parsetidT,labelT=parselabelT,preT=parsepreT,postT=parsepostT}
 instance FromJSON NET where
   parseJSON (Object o) = do
+      parsenameN <- o .: "name"
       parseplacesN <- o .: "places"
       parsetransN <- o .: "transitions"
       parseinitmarkN <- o .: "initmarking"
-      return NET{placesN=parseplacesN, transN=parsetransN, initmarkN=parseinitmarkN}
+      return NET{nameN=parsenameN, placesN=parseplacesN, transN=parsetransN, initmarkN=parseinitmarkN}
 
 instance Eq Place where
   p1 == p2 = pid p1 == pid p2
@@ -44,15 +45,20 @@ instance Ord Trans where
 convertTrans :: TRANS -> Trans
 convertTrans t = Trans {tid = (tidT t), label = (labelT t), pre = (Set.fromList (preT t)), post = (Set.fromList (postT t))}
 
-convertNet :: Maybe NET -> Maybe Net
+convertNet :: Maybe NET -> Maybe ([Char], Net)
 convertNet (Just n) =
-  let net = Net {places = (Set.fromList (placesN n)), trans = (map (convertTrans) (transN n)), initmark = (Set.fromList (initmarkN n))}
-  in if checkNetCorrect net
-    then Just net
+  let
+    net = Net {places = (Set.fromList (placesN n)), trans = (map (convertTrans) (transN n)), initmark = (Set.fromList (initmarkN n))}
+    name = nameN n
+  in if checkNetCorrect net && checkNameSyntax name
+    then Just ((name), net)
     else Nothing
 convertNet Nothing = Nothing
 
-extractNetFromJSON json = convertNet (decode json) :: Maybe Net
+extractNetFromJSON json = convertNet (decode json) :: Maybe ([Char], Net)
+
+checkNameSyntax :: [Char] -> Bool
+checkNameSyntax name = not (any (\c -> c==' ' || c=='"' || c=='=') name)
 
 checkPreAndPost :: Set.Set Place -> Trans -> Bool -> Bool
 checkPreAndPost p t b = (Set.isSubsetOf (pre t) p) && (Set.isSubsetOf (post t) p) && b

@@ -53,21 +53,21 @@ mergeCmd [] = []
 mergeCmd (s:l) = s ++ (' ':(mergeCmd l))
 
 cmdList :: IO ()
-cmdList = putStrLn "check\t\tTests if a property is satisfied by a model.\ndefine\t\tDefines a property and assigns it to the specified name.\nexit\t\tTerminates the execution of TCWB.\nhelp\t\tShows information about commands.\nload\t\tLoads the model contained in a file and assigns it to the specified name.\nquit\t\tTerminates the execution of TCWB.\nsize\t\tReturns the size of a model.\n"
+cmdList = putStrLn "check\t\tTests if a property is satisfied by a model.\ndefine\t\tDefines a property and assigns it to the specified name.\nexit\t\tTerminates the execution of TCWB.\nhelp\t\tShows information about commands.\nload\t\tLoads the model contained in a file and assigns it to a name if specified.\nquit\t\tTerminates the execution of TCWB.\nsize\t\tReturns the size of a model.\n"
 
 help :: [Char] -> IO ()
 help cmdName
   | cmdName == "help" = putStrLn "Shows information about commands.\n"
   | cmdName == "quit" = putStrLn "Terminates the execution of TCWB.\n"
   | cmdName == "exit" = putStrLn "Terminates the execution of TCWB.\n"
-  | cmdName == "load" = putStrLn "Loads the model contained in a file and assigns it to the specified name.\n\nload <filepath> in <name>\n\nfilepath\tPath of the file containing the model, if containing spaces it must be put between double quotes.\n\nname\t\tName to be assigned to the model once loaded.\n"
+  | cmdName == "load" = putStrLn "Loads the model contained in a file and assigns it to a name if specified.\n\nload <filepath> [in <name>]\n\nfilepath\tPath of the file containing the model, if containing spaces it must be put between double quotes.\n\nname\t\tName to be assigned to the model instead of the one found in the file.\n"
   | cmdName == "define" = putStrLn "Defines a property and assigns it to the specified name.\n\ndefine <name> = <formula>\n\nname\t\tName to be assigned to the property.\n\nformula\t\tClosed formula of the logic expressing the property.\n"
   | cmdName == "check" = putStrLn "Tests if a property is satisfied by a model, both must be previously defined.\n\ncheck <model> <property>\n\nmodel\t\tName of the model to be tested.\n\nproperty\tName of the property to be tested.\n"
   | cmdName == "size" = putStrLn "Returns the size of a model: the number of reachable states and the maximum branching.\n\nsize <model>\n\nmodel\t\tName of a previously defined model.\n"
   | otherwise = putStrLn "Unrecognized command\n"
 
-loadIn :: [Char] -> [Char] -> Map.Map [Char] Obj -> IO (Map.Map [Char] Obj)
-loadIn filePath name env = do
+loadIn :: [Char] -> Maybe [Char] -> Map.Map [Char] Obj -> IO (Map.Map [Char] Obj)
+loadIn filePath mbName env = do
   result <- try (BString.readFile filePath) :: IO (Either SomeException BString.ByteString)
   case result of
     Left e -> do
@@ -77,9 +77,13 @@ loadIn filePath name env = do
       Nothing -> do
         putStrLn "The input model is not correct\n"
         return env
-      Just net -> do
-        putStrLn (name ++ " = " ++ show net ++ "\n")
-        return (Map.insert name (MODEL net) env)
+      Just (name, net) -> case mbName of
+        Nothing -> do
+          putStrLn (show net ++ "\nloaded in " ++ name ++ "\n")
+          return (Map.insert name (MODEL net) env)
+        Just newName -> do
+          putStrLn (show net ++ "\nloaded in " ++ newName ++ "\n")
+          return (Map.insert newName (MODEL net) env)
 
 defineProp :: [Char] -> [Char] -> Map.Map [Char] Obj -> IO (Map.Map [Char] Obj)
 defineProp name value env =

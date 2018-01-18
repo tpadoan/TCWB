@@ -31,7 +31,10 @@ main = do
           help cmdName
           loop env
         Just ("load":filePath:"in":name:[]) -> do
-          newEnv <- loadIn filePath name env
+          newEnv <- loadIn filePath (Just name) env
+          loop newEnv
+        Just ("load":filePath:[]) -> do
+          newEnv <- loadIn filePath Nothing env
           loop newEnv
         Just ("define":name:"=":value) -> do
           newEnv <- defineProp name (mergeCmd value) env
