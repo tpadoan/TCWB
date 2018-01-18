@@ -103,11 +103,12 @@ A safe Petri net is defined by three things:
 * a set of **transitions**,
 * an **initial marking**.
 
-Those are also the three things to specify in the JSON file.
+Those are also three of the four things to specify in the JSON file.
 
 Here is a simple example:
 ```
 {
+  "name": "Sys",
   "places": [{"id": 0}, {"id": 1}, {"id": 2}, {"id": 3}],
   "transitions": [{"id": 0, "label": "a", "pre": [{"id": 0}], "post": [{"id": 3}]},
                   {"id": 1, "label": "b", "pre": [{"id": 1}], "post": [{"id": 1}]},
@@ -115,6 +116,8 @@ Here is a simple example:
   "initmarking": [{"id": 0}, {"id": 1}]
 }
 ```
+
+The *name* is the name you give to the net. It is just a string, no separator character allowed.
 
 The set of *places* is just an array of items identified by an ID which must be a unique number.
 
