@@ -68,7 +68,7 @@ Formulae are input directly during the execution.
 
 The syntax of the logic is the following:
 ```
-f ::= nu prop(Vars).f | mu prop(Vars).f | Modf Boolf
+f ::= nu(Vars) prop(Vars).f | mu(Vars) prop(Vars).f | Modf Boolf
 Boolf ::= & Modf | | Modf | epsilon
 Modf ::= {Depends < act var} Modf | [Depends < act var] Modf | T | F | prop(Vars) | (f)
 Vars ::= var Vars | epsilon
@@ -78,20 +78,20 @@ where *var* is a variable, e.g.: x, *act* is a label, e.g.: a, and *prop* is a p
 
 In *Depends* just variables names represent causal requirements, while names with a ‘!’ before, e.g., !x, represent independence requirements. There is no order on the variables in *Depends*, you can write, e.g., x !y z, where only y is an independence requirement.
 
-Some symbols can be omitted in certain circumstances. For instance, after propositions the parenthesis are not need if *Vars* is empty. Another example is that you do not need to put the symbol ‘<’ after empty *Depends*. Also, when specifying the label for an action in modal connectives, a useful wildcard is the symbol ‘_’ which means *any label*.
+Some symbols can be omitted in certain circumstances. For instance, after propositions the parenthesis are not need if *Vars* is empty. Furthermore, when *Vars* after nu/mu and *Vars* after the proposition are exactly the same, the first *Vars* can be omitted completely. Another example is that you do not need to put the symbol ‘<’ after empty *Depends*. Also, when specifying the label for an action in modal connectives, a useful wildcard is the symbol ‘_’ which means *any label*.
 
 It is fundamental to comply with the grammar, in particular to correctly parenthesize formulae.
 
 Some examples of formulae are:
 ```
 mu X. {a z} T | [_ z] X
-{a x} (nu Y(x). {x < a y} Y(y))
+{a x} (nu(x) Y(y). {y < a z} Y(z))
 {a x} {!x < b y} (nu X(x y). {!x y < b z} X(x z))
 ```
 
 All formulae must also satisfy the following requirements:
 * formulae must be closed (they have no free variables or proposition);
-* fixpoint formulae must have exactly all the variables used (free) in their inner subformula declared after their proposition;
+* fixpoint formulae must have exactly all the variables used (free) in their inner subformula declared after their proposition, and the same number of variables after the nu/mu;
 * propositions must always appear together with the number of variables they had when introduced, e.g., the formula<br/>nu X(x y). \[_ z\] X(z) is wrong.
 
 ### Specifying Petri nets
@@ -137,4 +137,8 @@ Several examples of safe Petri nets can be found in the *nets* forlder of this r
 
 * **Tommaso Padoan** - University of Padova, Department of Mathematics
 
-The theoretical technique, on which the tool is based, has been developed by **Paolo Baldan** and **Tommaso Padoan**, from the University of Padova.
+The theoretical technique [1], on which the tool is based, has been developed by **Paolo Baldan** and **Tommaso Padoan**, from the University of Padova.
+
+## *References*
+
+1. Baldan P., Padoan T. (2018) Automata for True Concurrency Properties. In: Baier C., Dal Lago U. (eds) FoSSaCS 2018. LNCS, vol 10803. Springer, 165-182.
