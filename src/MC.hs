@@ -122,8 +122,8 @@ renameVars eta _ _ = eta
 unfold :: Node -> Map.Map Int LHP -> Map.Map Int PropLog -> Int -> (Node, Map.Map Int PropLog)
 unfold this@(Node m eta (PROP (p,vs))) pi beta h =
   case Map.lookup p pi of
-    Just (NU (PROP (_,vsA),f)) -> (Node m (renameVars eta vs vsA) f, (Map.insert p (LogEntry (this,beta,h)) beta))
-    Just (MU (PROP (_,vsA),f)) -> (Node m (renameVars eta vs vsA) f, (Map.insert p (LogEntry (this,beta,h)) beta))
+    Just (NU (PROP (_,vsA),f,_)) -> (Node m (renameVars eta vs vsA) f, (Map.insert p (LogEntry (this,beta,h)) beta))
+    Just (MU (PROP (_,vsA),f,_)) -> (Node m (renameVars eta vs vsA) f, (Map.insert p (LogEntry (this,beta,h)) beta))
     _ -> (this, beta)
 unfold nd _ beta _ = (nd,beta)
 
@@ -155,8 +155,8 @@ forallBranches _ [] _ _ gamma = (True, gamma)
 
 -- Check automaton non-emptiness
 nonempty :: Net -> Node -> Map.Map Int LHP -> Map.Map Int PropLog -> Map.Map Node Bool -> (Bool, Map.Map Node Bool)
-nonempty n (Node _ _ (BOO T)) _ _ gamma= (True, gamma)
-nonempty n (Node _ _ (BOO F)) _ _ gamma = (False, gamma)
+nonempty _ (Node _ _ (BOO T)) _ _ gamma = (True, gamma)
+nonempty _ (Node _ _ (BOO F)) _ _ gamma = (False, gamma)
 nonempty n this@(Node m eta (AND (f,g))) pi beta gamma =
   case Map.lookup this gamma of
     Just b -> (b, gamma)
@@ -166,8 +166,8 @@ nonempty n this@(Node m eta (AND (f,g))) pi beta gamma =
         if b1
           then
             let (b2, gamma2) = nonempty n (Node m eta g) pi beta gamma1
-            in (b2, Map.insert (Node m eta (AND (f,g))) b2 gamma2)
-          else (False, Map.insert (Node m eta (AND (f,g))) False gamma1)
+            in (b2, Map.insert this b2 gamma2)
+          else (False, Map.insert this False gamma1)
 nonempty n this@(Node m eta (OR (f,g))) pi beta gamma =
   case Map.lookup this gamma of
     Just b -> (b, gamma)
@@ -175,44 +175,44 @@ nonempty n this@(Node m eta (OR (f,g))) pi beta gamma =
       let (b1, gamma1) = nonempty n (Node m eta f) pi beta gamma
       in
         if b1
-          then (True, Map.insert (Node m eta (OR (f,g))) True gamma1)
+          then (True, Map.insert this True gamma1)
           else
             let (b2, gamma2) = nonempty n (Node m eta g) pi beta gamma1
-            in (b2, Map.insert (Node m eta (OR (f,g))) b2 gamma2)
+            in (b2, Map.insert this b2 gamma2)
 nonempty n this@(Node m eta (DIA (cs,cc,a,v,f))) pi beta gamma =
   case Map.lookup this gamma of
     Just b -> (b, gamma)
     Nothing ->
       let (b, gammaNew) = existsBranch n (map (\t -> Node (execAndUpdate t m) (etaAfterTrans eta v t) f) (filter (checkCondOnTrans eta a cs cc) (getEnabledTrans n m))) pi beta gamma
-      in (b, Map.insert (Node m eta (DIA (cs,cc,a,v,f))) b gammaNew)
+      in (b, Map.insert this b gammaNew)
 nonempty n this@(Node m eta (BOX (cs,cc,a,v,f))) pi beta gamma =
   case Map.lookup this gamma of
     Just b -> (b, gamma)
     Nothing ->
       let (b, gammaNew) = forallBranches n (map (\t -> Node (execAndUpdate t m) (etaAfterTrans eta v t) f) (filter (checkCondOnTrans eta a cs cc) (getEnabledTrans n m))) pi beta gamma
-      in (b, Map.insert (Node m eta (BOX (cs,cc,a,v,f))) b gammaNew)
-nonempty n this@(Node m eta (NU (PROP (p,vs),f))) pi beta gamma =
+      in (b, Map.insert this b gammaNew)
+nonempty n this@(Node m eta (NU (PROP (p,vs),f,us))) pi beta gamma =
   case Map.lookup this gamma of
     Just b -> (b, gamma)
     Nothing ->
       let
-        nd = Node m eta (PROP (p,vs))
-        pi2 = Map.insert p (NU (PROP (p,vs),f)) pi
+        nd = Node m eta (PROP (p,us))
+        pi2 = Map.insert p (NU (PROP (p,vs),f,us)) pi
         beta2 = Map.insert p EmptyLog beta
-        h = hashNode m eta vs
-        (b, gammaNew) = nonempty n (Node m eta f) pi2 (Map.insert p (LogEntry (nd,beta2,h)) beta) gamma
-      in (b, Map.insert (Node m eta (NU (PROP (p,vs),f))) b gammaNew)
-nonempty n this@(Node m eta (MU (PROP (p,vs),f))) pi beta gamma =
+        h = hashNode m eta us
+        (b, gammaNew) = nonempty n (Node m (renameVars eta us vs) f) pi2 (Map.insert p (LogEntry (nd,beta2,h)) beta) gamma
+      in (b, Map.insert this b gammaNew)
+nonempty n this@(Node m eta (MU (PROP (p,vs),f,us))) pi beta gamma =
   case Map.lookup this gamma of
     Just b -> (b, gamma)
     Nothing ->
       let
-        nd = Node m eta (PROP (p,vs))
-        pi2 = Map.insert p (MU (PROP (p,vs),f)) pi
+        nd = Node m eta (PROP (p,us))
+        pi2 = Map.insert p (MU (PROP (p,vs),f,us)) pi
         beta2 = Map.insert p EmptyLog beta
-        h = hashNode m eta vs
-        (b, gammaNew) = nonempty n (Node m eta f) pi2 (Map.insert p (LogEntry (nd,beta2,h)) beta) gamma
-      in (b, Map.insert (Node m eta (MU (PROP (p,vs),f))) b gammaNew)
+        h = hashNode m eta us
+        (b, gammaNew) = nonempty n (Node m (renameVars eta us vs) f) pi2 (Map.insert p (LogEntry (nd,beta2,h)) beta) gamma
+      in (b, Map.insert this b gammaNew)
 nonempty n this@(Node m eta (PROP (p,vs))) pi beta gamma =
   case Map.lookup this gamma of
     Just b -> (b, gamma)
@@ -222,15 +222,15 @@ nonempty n this@(Node m eta (PROP (p,vs))) pi beta gamma =
         if testAncestors this beta h
           then
             case Map.lookup p pi of
-              Just (NU _) -> (True, Map.insert (Node m eta (PROP (p,vs))) True gamma)
-              Just (MU _) -> (False, Map.insert (Node m eta (PROP (p,vs))) False gamma)
-              _ -> (False, Map.insert (Node m eta (PROP (p,vs))) False gamma) -- branch should be never reached
+              Just (NU _) -> (True, Map.insert this True gamma)
+              Just (MU _) -> (False, Map.insert this False gamma)
+              _ -> (False, Map.insert this False gamma) -- branch should be never reached
           else
             let
               (nd,beta2) = unfold this pi beta h
               (b, gammaNew) = nonempty n nd pi beta2 gamma
-            in (b, Map.insert (Node m eta (PROP (p,vs))) b gammaNew)
-nonempty _ _ _ _ gamma = (False, gamma) -- branch should be never reached
+            in (b, Map.insert this b gammaNew)
+-- nonempty _ _ _ _ gamma = (False, gamma) -- branch should be never reached
 
 satisfies :: Net -> LHP -> Bool
 satisfies n f =
